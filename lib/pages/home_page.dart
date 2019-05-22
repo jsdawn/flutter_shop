@@ -48,48 +48,58 @@ class _HomePageState extends State<HomePage> with AutomaticKeepAliveClientMixin 
             List<Map> floor2 = (data['data']['floor2'] as List).cast(); //楼层1商品和图片
             List<Map> floor3 = (data['data']['floor3'] as List).cast(); //楼层1商品和图片
             // 返回部件
-            return EasyRefresh(
-              // refreshFooter: ClassicsFooter(
-              //   key: _footerKey,
-              //   bgColor: Colors.white,
-              //   textColor: Colors.pink,
-              //   moreInfoColor: Colors.pink,
-              //   showMore: true,
-              //   loadText: '上拉加载',
-              //   loadReadyText: '松开加载',
-              //   loadingText: '加载中...',
-              //   loadedText: '加载完成',
-              //   noMoreText: '', //插件bug 无法正确判断无数据状态
-              //   // moreInfo: '',
-              // ),
-              child: ListView(
-                children: <Widget>[
-                  SwiperDiy(swiperDataList: swiperDataList), //页面顶部轮播组件
-                  TopNavigator(navigatorList: navigatorList),
-                  AdBanner(adPicture: adPicture),
-                  LeaderPhone(leaderImage: leaderImage, leaderPhone: leaderPhone),
-                  Recommend(recommendList: recommendList),
-                  FloorTitle(pictureAddress: floor1Title),
-                  FloorContent(floorGoodsList: floor1),
-                  FloorTitle(pictureAddress: floor2Title),
-                  FloorContent(floorGoodsList: floor2),
-                  FloorTitle(pictureAddress: floor3Title),
-                  FloorContent(floorGoodsList: floor3),
-                  _hotGoods(),
-                ],
-              ),
-              loadMore: () async {
-                print('加载更多');
-                var formData = {'page': page};
-                await request('homePageBelowContent', formData: formData).then((res) {
-                  var data = json.decode(res.toString());
-                  List<Map> newGoodsList = (data['data'] as List).cast();
-                  setState(() {
-                    hotGoodsList.addAll(newGoodsList);
-                    page++;
-                  });
-                });
-              },
+            return Column(
+              children: <Widget>[
+                Expanded(
+                  child: Container(
+                    width: ScreenUtil().setWidth(750),
+                    child: EasyRefresh(
+                      // refreshFooter: ClassicsFooter(
+                      //   key: _footerKey,
+                      //   bgColor: Colors.white,
+                      //   textColor: Colors.pink,
+                      //   moreInfoColor: Colors.pink,
+                      //   showMore: true,
+                      //   loadText: '上拉加载',
+                      //   loadReadyText: '松开加载',
+                      //   loadingText: '加载中...',
+                      //   loadedText: '加载完成',
+                      //   noMoreText: '', //插件bug 无法正确判断无数据状态
+                      //   // moreInfo: '',
+                      // ),
+                      child: ListView(
+                        shrinkWrap: true,
+                        children: <Widget>[
+                          SwiperDiy(swiperDataList: swiperDataList), //页面顶部轮播组件
+                          TopNavigator(navigatorList: navigatorList),
+                          AdBanner(adPicture: adPicture),
+                          LeaderPhone(leaderImage: leaderImage, leaderPhone: leaderPhone),
+                          Recommend(recommendList: recommendList),
+                          FloorTitle(pictureAddress: floor1Title),
+                          FloorContent(floorGoodsList: floor1),
+                          FloorTitle(pictureAddress: floor2Title),
+                          FloorContent(floorGoodsList: floor2),
+                          FloorTitle(pictureAddress: floor3Title),
+                          FloorContent(floorGoodsList: floor3),
+                          _hotGoods(),
+                        ],
+                      ),
+                      loadMore: () async {
+                        print('加载更多');
+                        var formData = {'page': page};
+                        await request('homePageBelowContent', formData: formData).then((res) {
+                          var data = json.decode(res.toString());
+                          List<Map> newGoodsList = (data['data'] as List).cast();
+                          setState(() {
+                            hotGoodsList.addAll(newGoodsList);
+                            page++;
+                          });
+                        });
+                      },
+                    ),
+                  ),
+                ),
+              ],
             );
           } else {
             return Center(

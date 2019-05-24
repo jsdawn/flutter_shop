@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import '../provide/details_info.dart';
+import './details_page/details_explain.dart';
+import './details_page/details_top_area.dart';
+import './details_page/details_tabbar.dart';
 
 class DetailsPage extends StatelessWidget {
   final String goodsId;
@@ -9,15 +12,42 @@ class DetailsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     _getBackInfo(context);
-    return Container(
-      child: Center(
-        child: Text('商品ID: ${goodsId}'),
+    return Scaffold(
+      appBar: AppBar(
+        leading: IconButton(
+          icon: Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: Text('商品详情'),
+      ),
+      body: FutureBuilder(
+        future: _getBackInfo(context),
+        builder: (BuildContext context, AsyncSnapshot snapshot) {
+          if (snapshot.hasData) {
+            print(snapshot);
+            return Container(
+              child: ListView(
+                children: <Widget>[
+                  DetailsTopArea(),
+                  DetailsExplain(),
+                  DetailsTabbar(),
+                ],
+              ),
+            );
+          } else {
+            return Text('加载中...');
+          }
+        },
       ),
     );
   }
 
-  void _getBackInfo(BuildContext context) async {
+  Future _getBackInfo(BuildContext context) async {
     await Provide.value<DetailsInfoProvide>(context).setGoodsInfo(goodsId);
-    print('加载完毕');
+    var a = Provide.value<DetailsInfoProvide>(context).goodsInfo;
+    print(a);
+    return '完成加载';
   }
 }

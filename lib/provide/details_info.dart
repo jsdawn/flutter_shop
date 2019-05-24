@@ -6,15 +6,29 @@ import 'dart:convert';
 class DetailsInfoProvide with ChangeNotifier {
   DetailsModel goodsInfo = null;
 
-  // 从后台获取商品数据
-  setGoodsInfo(String id) {
-    var params = {'goodId': id};
-    request('getGoodsDetailById', formData: params).then((val) {
-      var res = json.decode(val.toString());
-      print(res);
-      goodsInfo = DetailsModel.fromJson(res);
+  bool isLeft = true;
+  bool isRight = false;
 
+  // 从后台获取商品数据
+  setGoodsInfo(String id) async{
+    var params = {'goodId': id};
+    await request('getGoodsDetailById', formData: params).then((val) {
+      var res = json.decode(val.toString());
+      goodsInfo = DetailsModel.fromJson(res);
       notifyListeners();
     });
+  }
+
+  // tabbar 的切换方法
+  changeLeftAndRight(String changeState) {
+    if (changeState == 'left') {
+      isLeft = true;
+      isRight = false;
+    }else{
+      isLeft = false;
+      isRight = true;
+    }
+
+    notifyListeners();
   }
 }

@@ -261,7 +261,6 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
                   },
                 ),
                 loadMore: () async {
-                  print('加载更多');
                   _getMoreList();
                 },
               ),

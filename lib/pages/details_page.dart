@@ -4,6 +4,8 @@ import '../provide/details_info.dart';
 import './details_page/details_explain.dart';
 import './details_page/details_top_area.dart';
 import './details_page/details_tabbar.dart';
+import './details_page/details_web.dart';
+import './details_page/details_bottom.dart';
 
 class DetailsPage extends StatelessWidget {
   final String goodsId;
@@ -26,15 +28,24 @@ class DetailsPage extends StatelessWidget {
         future: _getBackInfo(context),
         builder: (BuildContext context, AsyncSnapshot snapshot) {
           if (snapshot.hasData) {
-            print(snapshot);
-            return Container(
-              child: ListView(
-                children: <Widget>[
-                  DetailsTopArea(),
-                  DetailsExplain(),
-                  DetailsTabbar(),
-                ],
-              ),
+            return Stack(
+              children: <Widget>[
+                Container(
+                  child: ListView(
+                    children: <Widget>[
+                      DetailsTopArea(),
+                      DetailsExplain(),
+                      DetailsTabbar(),
+                      DetailsWeb(),
+                    ],
+                  ),
+                ),
+                Positioned(
+                  bottom: 0,
+                  left: 0,
+                  child: DetailsBottom(),
+                ),
+              ],
             );
           } else {
             return Text('加载中...');
@@ -46,8 +57,6 @@ class DetailsPage extends StatelessWidget {
 
   Future _getBackInfo(BuildContext context) async {
     await Provide.value<DetailsInfoProvide>(context).setGoodsInfo(goodsId);
-    var a = Provide.value<DetailsInfoProvide>(context).goodsInfo;
-    print(a);
     return '完成加载';
   }
 }

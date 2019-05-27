@@ -10,7 +10,7 @@ class DetailsInfoProvide with ChangeNotifier {
   bool isRight = false;
 
   // 从后台获取商品数据
-  setGoodsInfo(String id) async{
+  setGoodsInfo(String id) async {
     var params = {'goodId': id};
     await request('getGoodsDetailById', formData: params).then((val) {
       var res = json.decode(val.toString());
@@ -24,11 +24,10 @@ class DetailsInfoProvide with ChangeNotifier {
     if (changeState == 'left') {
       isLeft = true;
       isRight = false;
-    }else{
+    } else {
       isLeft = false;
       isRight = true;
     }
-
     notifyListeners();
   }
 }

@@ -5,9 +5,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../model/cartInfo.dart';
 
 class CartProvide with ChangeNotifier {
-  String cartString = '[]';
-  List<CartInfoModel> cartList = [];
+  // 状态部分
+  String cartString = '[]'; //购物车商品列表字符串
+  List<CartInfoModel> cartList = []; //购物车商品列表
+  double allPrice = 0.00; //选中总价格
+  int allGoodsCount = 0; //选中总数量
 
+  // 函数部分
   save(goodsId, goodsName, count, price, images) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cartString = prefs.getString('cartInfo'); //获取持久化存储的值
@@ -36,7 +40,8 @@ class CartProvide with ChangeNotifier {
         'goodsName': goodsName,
         'count': count,
         'price': price,
-        'images': images
+        'images': images,
+        'isCheck': true
       };
       tempList.add(newGoods);
       cartList.add(new CartInfoModel.fromJson(newGoods));
@@ -50,6 +55,7 @@ class CartProvide with ChangeNotifier {
     notifyListeners();
   }
 
+// 清空购物车
   remove() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('cartInfo');
@@ -57,16 +63,44 @@ class CartProvide with ChangeNotifier {
     notifyListeners();
   }
 
+// 查询
   getCartInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cartString = prefs.getString('cartInfo');
+    // 初始化
     cartList = [];
+    allPrice = 0.00;
+    allGoodsCount = 0;
+    // 重新赋值
     if (cartString != null) {
       List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
       tempList.forEach((item) {
+        if (item['isCheck']) {
+          allPrice += (item['count'] * item['price']);
+          allGoodsCount += item['count'];
+        }
         cartList.add(new CartInfoModel.fromJson(item));
       });
     }
     notifyListeners();
+  }
+
+  // 删除单个购物车商品
+  deleteOneGoods(String goodsId) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    cartString = prefs.getString('cartInfo');
+    List<Map> tempList = (json.decode(cartString.toString()) as List).cast();
+    int tempIndex = 0;
+    int delIndex = 0;
+    tempList.forEach((item) {
+      if (item['goodsId'] == goodsId) {
+        delIndex = tempIndex;
+      }
+      tempIndex++;
+    });
+    tempList.removeAt((delIndex));
+    cartString = json.encode(tempList).toString();
+    prefs.setString('cartInfo', cartString);
+    getCartInfo();
   }
 }

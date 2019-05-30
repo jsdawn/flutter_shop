@@ -4,7 +4,7 @@ import '../service/service_method.dart';
 import 'dart:convert';
 
 class DetailsInfoProvide with ChangeNotifier {
-  DetailsModel goodsInfo = null;
+  DetailsModel goodsInfo;
 
   bool isLeft = true;
   bool isRight = false;

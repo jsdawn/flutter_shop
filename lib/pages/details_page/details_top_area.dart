@@ -56,7 +56,7 @@ class DetailsTopArea extends StatelessWidget {
       padding: EdgeInsets.only(left: 15.0),
       margin: EdgeInsets.only(top: 8.0),
       child: Text(
-        '编号：${num}',
+        '编号：$num',
         style: TextStyle(
           color: Colors.black12,
         ),
@@ -73,14 +73,14 @@ class DetailsTopArea extends StatelessWidget {
       child: Row(
         children: <Widget>[
           Text(
-            '￥${presentPrice}',
+            '￥$presentPrice',
             style: TextStyle(
               color: Colors.pinkAccent,
               fontSize: ScreenUtil().setSp(40),
             ),
           ),
           Text(
-            '市场价:￥${oriPrice}',
+            '市场价:￥$oriPrice',
             style: TextStyle(color: Colors.black26, decoration: TextDecoration.lineThrough),
           ),
         ],

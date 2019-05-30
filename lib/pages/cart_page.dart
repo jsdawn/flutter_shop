@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provide/provide.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../provide/cart.dart';
 import './cart_page/cart_item.dart';
 import './cart_page/cart_bottom.dart';

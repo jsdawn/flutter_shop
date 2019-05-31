@@ -50,21 +50,19 @@ class CartProvide with ChangeNotifier {
     }
     //把字符串进行encode操作，
     cartString = json.encode(tempList).toString();
-    print(cartString);
-    print(cartList.toString());
     prefs.setString('cartInfo', cartString); //进行持久化
-    notifyListeners();
+    await getCartInfo();
   }
 
-// 清空购物车
+  // 清空购物车
   remove() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.remove('cartInfo');
     print('清空完成====');
-    notifyListeners();
+    await getCartInfo();
   }
 
-// 查询
+  // 查询
   getCartInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     cartString = prefs.getString('cartInfo');

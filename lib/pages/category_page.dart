@@ -9,6 +9,7 @@ import '../model/catagoryGoodsList.dart';
 import '../provide/category_goods_list.dart';
 import 'package:flutter_easyrefresh/easy_refresh.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import '../routers/application.dart';
 
 class CategoryPage extends StatefulWidget {
   CategoryPage({Key key}) : super(key: key);
@@ -79,8 +80,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
       CategoryModel category = CategoryModel.fromJson(data);
       setState(() {
         list = category.data;
-        Provide.value<ChildCategory>(context)
-            .setChildgategory(list[listIndex].mallCategoryId, list[listIndex].bxMallSubDto);
+        Provide.value<ChildCategory>(context).setChildgategory(
+            list[listIndex].mallCategoryId, list[listIndex].bxMallSubDto);
         _getGoodsList(categoryId: list[listIndex].mallCategoryId);
       });
     });
@@ -95,8 +96,10 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
     };
     await request('getMallGoods', formData: params).then((res) {
       var data = json.decode(res.toString());
-      CategoryGoodsListModel categoryGoods = CategoryGoodsListModel.fromJson(data);
-      Provide.value<CategoryGoodsListProvide>(context).setGoodsList(categoryGoods.data);
+      CategoryGoodsListModel categoryGoods =
+          CategoryGoodsListModel.fromJson(data);
+      Provide.value<CategoryGoodsListProvide>(context)
+          .setGoodsList(categoryGoods.data);
     });
   }
 
@@ -112,7 +115,8 @@ class _LeftCategoryNavState extends State<LeftCategoryNav> {
         });
         var childList = item.bxMallSubDto;
         var categoryId = item.mallCategoryId;
-        Provide.value<ChildCategory>(context).setChildgategory(categoryId, childList);
+        Provide.value<ChildCategory>(context)
+            .setChildgategory(categoryId, childList);
         _getGoodsList(categoryId: categoryId);
       },
       child: Container(
@@ -164,7 +168,9 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
 
   Widget _rightInkWell(int index, BxMallSubDto item) {
     bool isClick = false;
-    isClick = (index == Provide.value<ChildCategory>(context).childIndex) ? true : false;
+    isClick = (index == Provide.value<ChildCategory>(context).childIndex)
+        ? true
+        : false;
     // 获取相应子类的商品列表
     void _getGoodsList() {
       var params = {
@@ -174,18 +180,21 @@ class _RightCategoryNavState extends State<RightCategoryNav> {
       };
       request('getMallGoods', formData: params).then((res) {
         var data = json.decode(res.toString());
-        CategoryGoodsListModel categoryGoods = CategoryGoodsListModel.fromJson(data);
+        CategoryGoodsListModel categoryGoods =
+            CategoryGoodsListModel.fromJson(data);
         if (categoryGoods.data == null) {
           Provide.value<CategoryGoodsListProvide>(context).setGoodsList([]);
         } else {
-          Provide.value<CategoryGoodsListProvide>(context).setGoodsList(categoryGoods.data);
+          Provide.value<CategoryGoodsListProvide>(context)
+              .setGoodsList(categoryGoods.data);
         }
       });
     }
 
     return InkWell(
       onTap: () {
-        Provide.value<ChildCategory>(context).setChildIndex(index, item.mallSubId);
+        Provide.value<ChildCategory>(context)
+            .setChildIndex(index, item.mallSubId);
         _getGoodsList();
       },
       child: Container(
@@ -215,7 +224,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     super.initState();
   }
 
-  GlobalKey<RefreshFooterState> _footerKey = new GlobalKey<RefreshFooterState>();
+  GlobalKey<RefreshFooterState> _footerKey =
+      new GlobalKey<RefreshFooterState>();
 
   var scrollController = new ScrollController();
 
@@ -247,7 +257,7 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
                   loadReadyText: '释放立即加载',
                   loadingText: '加载中...',
                   loadedText: '加载完成',
-                  // noMoreText 插件bug 无法正确判断无数据状态 - 状态管理 手动更改状态
+                  // noMoreText 插件bug 无法正确判���无数据状态 - 状态管理 手动更改状态
                   noMoreText: Provide.value<ChildCategory>(context).noMoreText,
                   // noMoreText: '没数据',
                   // moreInfo: '',
@@ -257,7 +267,7 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
                   shrinkWrap: true,
                   itemCount: value.goodsList.length,
                   itemBuilder: (BuildContext context, int index) {
-                    return _listItem(value.goodsList, index);
+                    return _listItem(context, value.goodsList, index);
                   },
                 ),
                 loadMore: () async {
@@ -284,7 +294,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     };
     request('getMallGoods', formData: params).then((res) {
       var data = json.decode(res.toString());
-      CategoryGoodsListModel categoryGoods = CategoryGoodsListModel.fromJson(data);
+      CategoryGoodsListModel categoryGoods =
+          CategoryGoodsListModel.fromJson(data);
       if (categoryGoods.data == null) {
         Fluttertoast.showToast(
           msg: '已经到底啦~',
@@ -296,7 +307,8 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
         );
         Provide.value<ChildCategory>(context).setNoMoreText('没有更多数据了');
       } else {
-        Provide.value<CategoryGoodsListProvide>(context).setMoreList(categoryGoods.data);
+        Provide.value<CategoryGoodsListProvide>(context)
+            .setMoreList(categoryGoods.data);
       }
     });
   }
@@ -349,9 +361,12 @@ class _CategoryGoodsListState extends State<CategoryGoodsList> {
     );
   }
 
-  Widget _listItem(List newList, int index) {
+  Widget _listItem(BuildContext context, List newList, int index) {
     return InkWell(
-      onTap: () {},
+      onTap: () {
+        Application.router
+            .navigateTo(context, '/detail?id=${newList[index].goodsId}');
+      },
       child: Container(
         padding: EdgeInsets.only(top: 5.0, bottom: 5.0),
         decoration: BoxDecoration(
